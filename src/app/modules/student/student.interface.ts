@@ -1,15 +1,9 @@
-import { Schema, model, connect } from 'mongoose'
 export type UserName = {
   firstName: string
   middleName?: string
   lastName: string
 }
 export type BloodGroup = 'A-' | 'A+' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-'
-export type LocalGuardian = {
-  name: string
-  occupation: string
-  contactNo: string
-}
 export type Guardian = {
   fatherName: string
   fatherOccupation: string
@@ -17,6 +11,11 @@ export type Guardian = {
   motherName: string
   motherOccupation: string
   motherContactNo: string
+}
+export type LocalGuardian = {
+  name: string
+  occupation: string
+  contactNo: string
 }
 export type Student = {
   id: string
