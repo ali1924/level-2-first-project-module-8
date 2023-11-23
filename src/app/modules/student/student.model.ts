@@ -1,6 +1,5 @@
-import { Schema, model, connect, STATES } from 'mongoose'
+import { Schema, model } from 'mongoose'
 import {
-  BloodGroup,
   Guardian,
   LocalGuardian,
   Student,
