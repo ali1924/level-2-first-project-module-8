@@ -1,6 +1,16 @@
 import { Schema, model, connect } from 'mongoose'
-import { type } from 'os'
-type Guardian = {
+export type UserName = {
+  firstName: string
+  middleName?: string
+  lastName: string
+}
+export type BloodGroup = 'A-' | 'A+' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-'
+export type LocalGuardian = {
+  name: string
+  occupation: string
+  contactNo: string
+}
+export type Guardian = {
   fatherName: string
   fatherOccupation: string
   fatherContactNo: string
@@ -8,21 +18,18 @@ type Guardian = {
   motherOccupation: string
   motherContactNo: string
 }
-type BloodGroup='A-' | 'A+' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-'
 export type Student = {
   id: string
-  name: {
-    firstName: string
-    middleName: string
-    lastName: string
-  }
+  name: UserName
   email: string
   gender: 'Male' | 'Female'
-  dateOfBirth: string
+  dateOfBirth?: string
   contactNo: string
   emergencyContactNo: string
   bloodGroup?: BloodGroup
   presentAddress: string
   permanentAddress: string
   guardian: Guardian
+  localGuardian: LocalGuardian
+  isActive: 'active' | 'blocked'
 }
