@@ -4,7 +4,6 @@ import {
   Guardian,
   LocalGuardian,
   Student,
-  Student,
   UserName,
 } from './student.interface'
 const userNameSchema = new Schema<UserName>({
@@ -26,16 +25,7 @@ const localGuardianSchema = new Schema<LocalGuardian>({
   occupation: { type: String },
   contactNo: { type: String },
 })
-const bloodGroupSchema = new Schema<BloodGroup>([
-  'A+',
-  'A-',
-  'AB+',
-  'AB-',
-  'B+',
-  'B-',
-  'O+',
-  'O-',
-])
+
 const studentSchema = new Schema<Student>({
   id: { type: String },
   name: userNameSchema,
@@ -44,7 +34,7 @@ const studentSchema = new Schema<Student>({
   dateOfBirth: String,
   contactNo: { type: String, required: true },
   emergencyContactNo: { type: String },
-  bloodGroup: bloodGroupSchema,
+  bloodGroup: ['A+', 'A-', 'AB+', 'AB-', 'B+', 'B-', 'O+', 'O-'],
   presentAddress: { type: String },
   permanentAddress: { type: String },
   guardian: guardianSchema,
@@ -55,4 +45,3 @@ const studentSchema = new Schema<Student>({
 // 3. Create a Model.
 // const modelName=model<Type>("modelName",schema)
 export const StudentModel = model<Student>('Student', studentSchema)
-
