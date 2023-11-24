@@ -31,7 +31,7 @@ const userNameSchema = new Schema<UserName>({
     trim: true,
     maxlength: [20, 'Last name can not be less than 20 character'],
     validate: {
-      validator: function (value) {
+      validator: function (value:string) {
         const lastNameStr = value.charAt(0).toUpperCase() + value.slice(1)
         return value === lastNameStr
       },
