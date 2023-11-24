@@ -1,4 +1,5 @@
 import { Schema, model } from 'mongoose'
+import validator from 'validator'
 import { Guardian, LocalGuardian, Student, UserName } from './student.interface'
 const userNameSchema = new Schema<UserName>({
   firstName: {
@@ -6,15 +7,21 @@ const userNameSchema = new Schema<UserName>({
     required: [true, 'First name is required.'],
     trim: true,
     maxlength: [20, 'First name can not be less than 20 character'],
-    validate: function (value: string) {
-      const firstChar = value.charAt(0).toUpperCase()
-      const restChar = value.slice(1)
-      const firstNameStr = firstChar + restChar
-      if (value === firstNameStr) {
-        return true
-      } else {
-        return false
-      }
+    // validate: function (value: string) {
+    //   const firstChar = value.charAt(0).toUpperCase()
+    //   const restChar = value.slice(1)
+    //   const firstNameStr = firstChar + restChar
+    //   if (value === firstNameStr) {
+    //     return true
+    //   } else {
+    //     return false
+    //   }
+    // },
+    validate: {
+      validator: (value: string) => {
+        return validator.isAlpha(value)
+      },
+      message: '{Value is not valid}',
     },
   },
   middleName: { type: String },
@@ -71,6 +78,10 @@ const studentSchema = new Schema<Student>({
     required: [true, 'Email is required.'],
     unique: true,
     message: 'Email must be unique and is required.',
+    validate: {
+      validator: (value: string) => validator.isEmail(value),
+      message: '{VALUE} is not valid email type',
+    },
   },
   gender: {
     type: String,
