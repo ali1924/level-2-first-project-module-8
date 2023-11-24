@@ -12,24 +12,25 @@ const createStudent = async (req: Request, res: Response) => {
     // const student = req.body.student
     const { student: studentData } = req.body
 
-    // 2. validate schema
+    // 2. validate schema using joi
     const { error, value } = studentValidationSchema.validate(studentData)
     console.log('Error: ', error, 'Value: ', value)
-
+    // 3. pass validate data into DB
+    const result = await StudentServices.createStudentIntoDB(value)
     if (error) {
       // console.log(error)
       res.status(500).send({
         success: false,
         message: 'Something went wrong',
-        error: error,
+        error: error.details,
       })
     }
 
     //will call service function to send data
-    const result = await StudentServices.createStudentIntoDB(studentData)
+    // const result = await StudentServices.createStudentIntoDB(studentData)
 
     //console post data
-    console.log(result)
+    // console.log(result)
     //send res
     res.status(200).send({
       success: true,
