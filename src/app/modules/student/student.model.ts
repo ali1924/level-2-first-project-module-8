@@ -1,19 +1,53 @@
 import { Schema, model } from 'mongoose'
 import { Guardian, LocalGuardian, Student, UserName } from './student.interface'
 const userNameSchema = new Schema<UserName>({
-  firstName: { type: String, required: true },
+  firstName: {
+    type: String,
+    required: [true, 'First name is required.'],
+    trim: true,
+    maxlength: [20, 'First name can not be less than 20 character'],
+    validate: function (value: string) {
+      const firstChar = value.charAt(0).toUpperCase()
+      const restChar = value.slice(1)
+      const firstNameStr = firstChar + restChar
+      if (value === firstNameStr) {
+        return true
+      } else {
+        return false
+      }
+    },
+  },
   middleName: { type: String },
-  lastName: { type: String, required: true },
+  lastName: {
+    type: String,
+    required: [true, 'Last name is required.'],
+    trim: true,
+    maxlength: [20, 'Last name can not be less than 20 character'],
+    validate: {
+      validator: function (value) {
+        const lastNameStr = value.charAt(0).toUpperCase() + value.slice(1)
+        return value === lastNameStr
+      },
+      message: '{VALUE} is not a capitalized',
+    },
+  },
 })
 
 const guardianSchema = new Schema<Guardian>({
-  fatherName: { type: String },
+  fatherName: { type: String, required: [true, "Father's name is required."] },
   fatherOccupation: { type: String },
-  fatherContactNo: { type: String },
-  motherName: { type: String },
+  fatherContactNo: {
+    type: String,
+    required: [true, "Father's contact number is required."],
+  },
+  motherName: { type: String, required: [true, "Mother's name is required."] },
   motherOccupation: { type: String },
-  motherContactNo: { type: String },
+  motherContactNo: {
+    type: String,
+    required: [true, "Mother's contact number is required."],
+  },
 })
+
 const localGuardianSchema = new Schema<LocalGuardian>({
   name: { type: String },
   occupation: { type: String },
@@ -21,43 +55,62 @@ const localGuardianSchema = new Schema<LocalGuardian>({
 })
 
 const studentSchema = new Schema<Student>({
-  id: { type: String, required: true, unique: true },
+  id: {
+    type: String,
+    required: true,
+    unique: true,
+    message: 'Student ID is required and must be unique.',
+  },
   name: {
     type: userNameSchema,
     required: true,
+    message: 'Name is required.',
   },
-  email: { type: String, required: [true, 'Email  is required'], unique: true },
-  //   gender: ['Male', 'Female'], //enum same as union of ts
+  email: {
+    type: String,
+    required: [true, 'Email is required.'],
+    unique: true,
+    message: 'Email must be unique and is required.',
+  },
   gender: {
     type: String,
     enum: {
       values: ['Male', 'Female', 'Other'],
-      // message:"This gender field only the following:'Male','Female' or 'Other' "
-      message: '{VALUE} is not valid',
+      message: 'Gender must be one of: Male, Female, or Other.',
     },
-    required: true,
-  }, //enum same as union of ts
+    required: [true, 'Gender is required.'],
+  },
   dateOfBirth: String,
-  contactNo: { type: String, required: true },
-  emergencyContactNo: { type: String },
+  contactNo: {
+    type: String,
+    required: [true, 'Contact number is required.'],
+  },
+  emergencyContactNo: String,
   bloodGroup: {
     type: String,
-    enum: ['A+', 'A-', 'AB+', 'AB-', 'B+', 'B-', 'O+', 'O-'],
+    enum: {
+      values: ['A+', 'A-', 'AB+', 'AB-', 'B+', 'B-', 'O+', 'O-'],
+      message:
+        'Invalid blood group. Must be one of: A+, A-, AB+, AB-, B+, B-, O+, O-',
+    },
   },
-  presentAddress: { type: String },
-  permanentAddress: { type: String },
+  presentAddress: String,
+  permanentAddress: String,
   guardian: {
     type: guardianSchema,
-    required: true,
+    required: [true, 'Guardian information is required.'],
   },
   localGuardian: {
     type: localGuardianSchema,
-    required: true,
+    required: [true, 'Local guardian information is required.'],
   },
   isActive: {
     type: String,
-    enum: ['active', 'blocked'],
-    // required:true
+    enum: {
+      values: ['active', 'blocked'],
+      message:
+        'Invalid value for isActive. Must be either "active" or "blocked".',
+    },
     default: 'active',
   },
 })
