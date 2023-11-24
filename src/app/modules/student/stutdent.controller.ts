@@ -1,30 +1,40 @@
 import { Request, Response } from 'express'
 import { StudentServices } from './student.services'
-import studentValidationSchema from './student.validation'
+import studentValidationSchema from './student.zod.validation'
+// import studentValidationSchema from './student.validation'
 
 const createStudent = async (req: Request, res: Response) => {
   try {
+    //1.create a schema using zod
+
     //creating a schema validation using joi
-    //1. create schema
+    //1. create schema joi
 
     //client theke data niye aste hobe
     // const student = req.body
     // const student = req.body.student
     const { student: studentData } = req.body
+    //2. parse schema using zod
+    const zodParseData = studentValidationSchema.parse(studentData)
+    console.log('Zod parse:', zodParseData)
 
-    // 2. validate schema using joi
-    const { error, value } = studentValidationSchema.validate(studentData)
-    console.log('Error: ', error, 'Value: ', value)
-    // 3. pass validate data into DB
-    const result = await StudentServices.createStudentIntoDB(value)
-    if (error) {
-      // console.log(error)
-      res.status(500).send({
-        success: false,
-        message: 'Something went wrong',
-        error: error.details,
-      })
-    }
+    // // 2. validate schema using joi
+    // const { error, value } = studentValidationSchema.validate(studentData)
+    // console.log('Error: ', error, 'Value: ', value)
+    // // 3. pass validate joi data into DB
+    // const result = await StudentServices.createStudentIntoDB(value)
+
+    // 3. pass validate zod data into DB
+    const result = await StudentServices.createStudentIntoDB(zodParseData)
+    console.log('Result:', result)
+    // if (error) {
+    //   // console.log(error)
+    //   res.status(500).send({
+    //     success: false,
+    //     message: 'Something went wrong',
+    //     error: error.details,
+    //   })
+    // }
 
     //will call service function to send data
     // const result = await StudentServices.createStudentIntoDB(studentData)
