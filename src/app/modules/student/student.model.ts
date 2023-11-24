@@ -1,10 +1,5 @@
 import { Schema, model } from 'mongoose'
-import {
-  Guardian,
-  LocalGuardian,
-  Student,
-  UserName,
-} from './student.interface'
+import { Guardian, LocalGuardian, Student, UserName } from './student.interface'
 const userNameSchema = new Schema<UserName>({
   firstName: { type: String, required: true },
   middleName: { type: String },
@@ -26,19 +21,45 @@ const localGuardianSchema = new Schema<LocalGuardian>({
 })
 
 const studentSchema = new Schema<Student>({
-  id: { type: String },
-  name: userNameSchema,
-  email: { type: String, required: true },
-  gender: ['Male', 'Female'], //enum same as union of ts
+  id: { type: String, required: true, unique: true },
+  name: {
+    type: userNameSchema,
+    required: true,
+  },
+  email: { type: String, required: [true, 'Email  is required'], unique: true },
+  //   gender: ['Male', 'Female'], //enum same as union of ts
+  gender: {
+    type: String,
+    enum: {
+      values: ['Male', 'Female', 'Other'],
+      // message:"This gender field only the following:'Male','Female' or 'Other' "
+      message: '{VALUE} is not valid',
+    },
+    required: true,
+  }, //enum same as union of ts
   dateOfBirth: String,
   contactNo: { type: String, required: true },
   emergencyContactNo: { type: String },
-  bloodGroup: ['A+', 'A-', 'AB+', 'AB-', 'B+', 'B-', 'O+', 'O-'],
+  bloodGroup: {
+    type: String,
+    enum: ['A+', 'A-', 'AB+', 'AB-', 'B+', 'B-', 'O+', 'O-'],
+  },
   presentAddress: { type: String },
   permanentAddress: { type: String },
-  guardian: guardianSchema,
-  localGuardian: localGuardianSchema,
-  isActive: ['active', 'blocked'],
+  guardian: {
+    type: guardianSchema,
+    required: true,
+  },
+  localGuardian: {
+    type: localGuardianSchema,
+    required: true,
+  },
+  isActive: {
+    type: String,
+    enum: ['active', 'blocked'],
+    // required:true
+    default: 'active',
+  },
 })
 
 // 3. Create a Model.
